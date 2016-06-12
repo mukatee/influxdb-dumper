@@ -12,7 +12,7 @@ parser.add_argument("-p", "--port", help="Database port", default="8086", nargs=
 parser.add_argument("-u", "--username", help="DB user name", default="root", nargs='?')
 parser.add_argument("-pw", "--password", help="DB password", default="root", nargs='?')
 parser.add_argument("-tl", "--timelength", help="Length of time for dump", default="1h", nargs='?')
-parser.add_argument("-et", "--endtime", help="End time for dump", default="""now()""", nargs='?')
+parser.add_argument("-et", "--endtime", help="End time for dump", default='now()', nargs='?')
 args = parser.parse_args()
 
 host = args.hostname

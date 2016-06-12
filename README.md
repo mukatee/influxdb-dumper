@@ -20,3 +20,7 @@ Remove the whole epoch parameter to get textual date strings (such as the exampl
 
 Sometimes if the "show measurements" query does not list all fields returned by a "select *" query,
 those will not be included in the dumps. This seems to be the case especially for the "_internal" database.
+
+Long timeframe dumps may be better off split into several separate dumps, as all data to be dumped is
+basically loaded to memory.
+
