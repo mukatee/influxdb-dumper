@@ -24,3 +24,5 @@ those will not be included in the dumps. This seems to be the case especially fo
 Long timeframe dumps may be better off split into several separate dumps, as all data to be dumped is
 basically loaded to memory.
 
+It is possible to use the filter option to disable dumping of some specific measurements/columns.
+For example, to leave out measurements/columns named "C1" and "C2", use a filter value of "C1,C2".
