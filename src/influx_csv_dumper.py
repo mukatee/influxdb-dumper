@@ -13,6 +13,7 @@ parser.add_argument("-u", "--username", help="DB user name", default="root", nar
 parser.add_argument("-pw", "--password", help="DB password", default="root", nargs='?')
 parser.add_argument("-tl", "--timelength", help="Length of time for dump", default="1h", nargs='?')
 parser.add_argument("-et", "--endtime", help="End time for dump", default='now()', nargs='?')
+parser.add_argument("-f", "--filter", help="List of columns to filter", default='', nargs='?')
 args = parser.parse_args()
 
 host = args.hostname
@@ -22,6 +23,8 @@ password = args.password
 dbname = args.database
 time_length = args.timelength
 end_time = args.endtime
+filtered_str = args.filter
+filtered = [x.strip() for x in filtered_str.split(',')]
 client = InfluxDBClient(host, port, username, password, dbname)
 #first we get list of all measurements in the selected db to dump them
 query = 'show measurements'
@@ -35,7 +38,9 @@ for measurements in result:
         fields_result = client.query(query)
         for field in fields_result:
             for pair in field:
-                names.append(pair['fieldKey'])
+                name = pair['fieldKey']
+                if name in filtered: continue
+                names.append(name)
 
         filename = "report_csv/"+measure_name+'.csv'
         os.makedirs(os.path.dirname(filename), exist_ok=True)

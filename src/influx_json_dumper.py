@@ -13,6 +13,7 @@ parser.add_argument("-u", "--username", help="DB user name", default="root", nar
 parser.add_argument("-pw", "--password", help="DB password", default="root", nargs='?')
 parser.add_argument("-tl", "--timelength", help="Length of time for dump", default="1h", nargs='?')
 parser.add_argument("-et", "--endtime", help="End time for dump", default='now()', nargs='?')
+parser.add_argument("-f", "--filter", help="List of columns to filter", default='', nargs='?')
 args = parser.parse_args()
 
 host = args.hostname
@@ -22,6 +23,8 @@ password = args.password
 dbname = args.database
 time_length = args.timelength
 end_time = args.endtime
+filtered_str = args.filter
+filtered = [x.strip() for x in filtered_str.split(',')]
 client = InfluxDBClient(host, port, username, password, dbname)
 #first we get list of all measurements in the selected db to dump them
 query = 'show measurements'
@@ -39,6 +42,9 @@ for measurements in result:
             lines = []
             for point in result:
                 for item in point:
+                    for col in filtered:
+                        if col in item:
+                            del item[col]
                     #first we build a list of dictionaries for each measurement value
                     lines.append(item)
             #finally put the list into a dict and use built-in functionality of "json" module to dump them all at once
