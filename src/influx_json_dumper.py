@@ -37,7 +37,7 @@ for measurements in result:
         os.makedirs(os.path.dirname(filename), exist_ok=True)
         #request all data for given timeframe and dump as json
         with open(filename, 'w') as file:
-            query = """select * from "{}" where time > "{}" - {} AND time < "{}" """.format(measure_name, end_time, time_length, end_time)
+            query = """select * from "{}" where time > '{}' - {} AND time < '{}' """.format(measure_name, end_time, time_length, end_time)
             result = client.query(query, epoch='ms')
             lines = []
             for point in result:

@@ -48,7 +48,8 @@ for measurements in result:
         with open(filename, 'w') as file:
             writer = csv.DictWriter(file, names, delimiter=',', lineterminator='\n', extrasaction='ignore')
             writer.writeheader()
-            query = """select * from "{}" where time > "{}" - {} AND time < "{}" """.format(measure_name, end_time, time_length, end_time)
+            query = """select * from "{}" where time > '{}' - {} AND time < '{}' """.format(measure_name, end_time, time_length, end_time)
+            print(query)
             result = client.query(query, epoch='ms')
             for point in result:
                 for item in point:
