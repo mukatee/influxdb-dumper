@@ -4,6 +4,7 @@ import json
 import argparse
 import os
 from influxdb import InfluxDBClient
+from datetime import datetime
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-db", "--database", help="Database name", default="_internal", nargs='?')
@@ -45,6 +46,9 @@ for measurements in result:
                     for col in filtered:
                         if col in item:
                             del item[col]
+                    ms = item['time'] / 1000
+                    d = datetime.fromtimestamp(ms)
+                    item['readable_time'] = d.isoformat('T')+'Z'
                     #first we build a list of dictionaries for each measurement value
                     lines.append(item)
             #finally put the list into a dict and use built-in functionality of "json" module to dump them all at once

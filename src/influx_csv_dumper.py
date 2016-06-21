@@ -4,6 +4,7 @@ import argparse
 import os
 import csv
 from influxdb import InfluxDBClient
+from datetime import datetime
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-db", "--database", help="Database name", default="_internal", nargs='?')
@@ -34,7 +35,7 @@ for measurements in result:
         measure_name = measure['name']
         #get list of all fields for the measurement to build the CSV header
         query = 'show field keys from "'+measure_name+'"'
-        names = ['host', 'time']
+        names = ['host', 'time', 'readable_time']
         fields_result = client.query(query)
         for field in fields_result:
             for pair in field:
@@ -50,9 +51,13 @@ for measurements in result:
             writer.writeheader()
             query = """select * from "{}" where time > '{}' - {} AND time < '{}' """.format(measure_name, end_time, time_length, end_time)
             print(query)
+            #https://docs.influxdata.com/influxdb/v0.13/guides/querying_data/
             result = client.query(query, epoch='ms')
             for point in result:
                 for item in point:
+                    ms = item['time'] / 1000
+                    d = datetime.fromtimestamp(ms)
+                    item['readable_time'] = d.isoformat('T')+'Z'
                     writer.writerow(item)
 
 
